@@ -19,6 +19,12 @@
 		"DISCORD_APPLICATION_ID": "1508890289849368606",
 		"DISCORD_PUBLIC_KEY": "dd3f164eebd0ee71cad1eafd03d054fcbdc9aed6b36da371ba178fc8de164205"
 	},
+	"kv_namespaces": [
+		{
+			"binding": "COMMAND_STATS",
+			"id": "b3c7922a86e843d5bda422f7faab23fb"
+		}
+	],
 	"workers_dev": false,
 	"preview_urls": false,
 	"placement": {  "mode": "smart" }	

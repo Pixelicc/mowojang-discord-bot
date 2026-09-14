@@ -6,6 +6,7 @@ import {
 } from "discord-interactions";
 import { commands } from "./commands";
 import type { DiscordInteraction } from "./commands";
+import { incrementCommandStatistic } from "./stats";
 
 const app = new Hono<{ Bindings: Env }>();
 
@@ -46,6 +47,7 @@ app.post("/interactions", async (c) => {
     const command = commands[commandName];
 
     if (command) {
+      c.executionCtx.waitUntil(incrementCommandStatistic(c.env, commandName));
       const result = await command.execute(interaction, c.env);
       return c.json(result);
     }

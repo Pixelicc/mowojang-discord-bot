@@ -1,4 +1,5 @@
 import { InteractionResponseType } from "discord-interactions";
+import { getCommandStats } from "./stats";
 
 const MOWOJANG_STATUS_URL = "https://mowojang-status.pixelic.dev/";
 
@@ -267,8 +268,35 @@ export const usernameCommand: Command = {
   },
 };
 
+export const statsCommand: Command = {
+  name: "stats",
+  description: "View Command Usage Statistics",
+  execute: async (_interaction, env) => {
+    const stats = await getCommandStats(env);
+    const entries = Object.entries(stats).sort(([, a], [, b]) => b - a);
+    const description = entries
+      .map(([name, count]) => `**/${name}:** ${count}`)
+      .join("\n");
+
+    return {
+      type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+      data: {
+        embeds: [
+          {
+            title: "Command Usage Stats",
+            description,
+            color: 0x5865f2,
+          },
+        ],
+        flags: 64,
+      },
+    };
+  },
+};
+
 export const commands: Record<string, Command> = {
   [pingCommand.name]: pingCommand,
   [uuidCommand.name]: uuidCommand,
   [usernameCommand.name]: usernameCommand,
+  [statsCommand.name]: statsCommand,
 };
