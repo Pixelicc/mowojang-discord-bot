@@ -1,11 +1,8 @@
-const keyFor = (commandName: string): string =>
-  `mowojang/bot/stats/${commandName}`;
-
 export async function incrementCommandStatistic(
   env: Env,
   commandName: string,
 ): Promise<void> {
-  const key = keyFor(commandName);
+  const key = `commands/${commandName}`;
   const current = Number.parseInt(
     (await env.COMMAND_STATS.get(key)) ?? "0",
     10,
@@ -18,13 +15,13 @@ export async function getCommandStats(
 ): Promise<Record<string, number>> {
   const stats: Record<string, number> = {};
   const { keys } = await env.COMMAND_STATS.list({
-    prefix: "mowojang/bot/stats/",
+    prefix: "commands/",
   });
   const values = await Promise.all(
     keys.map((k) => env.COMMAND_STATS.get(k.name)),
   );
   keys.forEach((k, i) => {
-    const commandName = k.name.slice("mowojang/bot/stats/".length);
+    const commandName = k.name.slice("commands/".length);
     stats[commandName] = Number.parseInt(values[i] ?? "0", 10);
   });
   return stats;
