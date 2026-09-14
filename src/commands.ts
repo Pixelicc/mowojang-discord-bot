@@ -187,7 +187,7 @@ export const statsCommand: Command = {
           {
             title: "Statistics",
             description,
-            color: 0x5865f2,
+            color: 0xffc2d1,
           },
         ],
       },
