@@ -1,18 +1,8 @@
 import { InteractionResponseType } from "discord-interactions";
-import { getCommandStats } from "./stats";
-
-const MOWOJANG_STATUS_URL = "https://mowojang-status.pixelic.dev/";
-
-const formatUUID = (UUID: string): string => {
-  const clean = UUID.replaceAll("-", "");
-  if (clean.length === 32) {
-    return clean.replace(/(.{8})(.{4})(.{4})(.{4})(.{12})/, "$1-$2-$3-$4-$5");
-  }
-  return UUID;
-};
-
-const getSkinURL = (UUID: string): string =>
-  `https://mc-heads.net/body/${UUID.replaceAll("-", "").toLowerCase()}/left`;
+import { getCommandStatistics } from "./stats";
+import { dashUUID } from "./utils";
+import { EMBEDS } from "./embeds";
+import { COMPONENTS } from "./components";
 
 export interface CommandOption {
   type: number;
@@ -75,7 +65,7 @@ export const uuidCommand: Command = {
     {
       type: 3,
       name: "username",
-      description: "Minecraft username",
+      description: "Minecraft Username",
       required: true,
     },
   ],
@@ -91,44 +81,13 @@ export const uuidCommand: Command = {
       );
       if (res.status === 200) {
         const data = (await res.json()) as { id: string; name: string };
-        const formattedUuid = formatUUID(data.id);
+        const formattedUuid = dashUUID(data.id);
         console.log(`[uuid] Found UUID '${formattedUuid}' for '${data.name}'`);
         return {
           type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
           data: {
-            embeds: [
-              {
-                title: "Minecraft Profile",
-                description: `**Username:** ${data.name}\n**UUID:** \`${formattedUuid}\``,
-                color: 0x5865f2,
-                thumbnail: { url: getSkinURL(data.id) },
-              },
-            ],
-            components: [
-              {
-                type: 1,
-                components: [
-                  {
-                    type: 2,
-                    style: 5,
-                    label: "NameMC",
-                    url: `https://namemc.com/profile/${encodeURIComponent(data.name)}`,
-                  },
-                  {
-                    type: 2,
-                    style: 5,
-                    label: "Laby",
-                    url: `https://laby.net/@${encodeURIComponent(data.name)}`,
-                  },
-                  {
-                    type: 2,
-                    style: 5,
-                    label: "Crafty",
-                    url: `https://crafty.gg/@${encodeURIComponent(data.name)}`,
-                  },
-                ],
-              },
-            ],
+            embeds: [EMBEDS.PROFILE(data)],
+            components: [COMPONENTS.PROFILE(data)],
           },
         };
       }
@@ -136,13 +95,7 @@ export const uuidCommand: Command = {
       return {
         type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
         data: {
-          embeds: [
-            {
-              title: "Profile not found",
-              description: `Could not find a Minecraft user with username **${username}**.`,
-              color: 0xe74c3c,
-            },
-          ],
+          embeds: [EMBEDS.NOT_FOUND],
         },
       };
     } catch (err) {
@@ -152,14 +105,7 @@ export const uuidCommand: Command = {
       return {
         type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
         data: {
-          embeds: [
-            {
-              title: "Mowojang API unavailable",
-              description: `An error occurred while contacting the Mowojang API. Please check the status page: ${MOWOJANG_STATUS_URL}`,
-              url: MOWOJANG_STATUS_URL,
-              color: 0xe74c3c,
-            },
-          ],
+          embeds: [EMBEDS.STATUS],
         },
       };
     }
@@ -190,7 +136,7 @@ export const usernameCommand: Command = {
       );
       if (res.status === 200) {
         const data = (await res.json()) as { id: string; name: string };
-        const formattedUuid = formatUUID(data.id);
+        const formattedUuid = dashUUID(data.id);
         console.log(
           `[username] Found Username '${data.name}' for ${formattedUuid}`,
           interaction.id ?? "",
@@ -198,39 +144,8 @@ export const usernameCommand: Command = {
         return {
           type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
           data: {
-            embeds: [
-              {
-                title: "Minecraft Profile",
-                description: `**UUID:** \`${formattedUuid}\`\n**Username:** ${data.name}`,
-                color: 0x5865f2,
-                thumbnail: { url: getSkinURL(data.id) },
-              },
-            ],
-            components: [
-              {
-                type: 1,
-                components: [
-                  {
-                    type: 2,
-                    style: 5,
-                    label: "NameMC",
-                    url: `https://namemc.com/profile/${encodeURIComponent(data.name)}`,
-                  },
-                  {
-                    type: 2,
-                    style: 5,
-                    label: "Laby",
-                    url: `https://laby.net/@${encodeURIComponent(data.name)}`,
-                  },
-                  {
-                    type: 2,
-                    style: 5,
-                    label: "Crafty",
-                    url: `https://crafty.gg/@${encodeURIComponent(data.name)}`,
-                  },
-                ],
-              },
-            ],
+            embeds: [EMBEDS.PROFILE(data)],
+            components: [COMPONENTS.PROFILE(data)],
           },
         };
       }
@@ -238,13 +153,7 @@ export const usernameCommand: Command = {
       return {
         type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
         data: {
-          embeds: [
-            {
-              title: "Profile not found",
-              description: `Could not find a Minecraft profile for UUID **${uuid}**.`,
-              color: 0xe74c3c,
-            },
-          ],
+          embeds: [EMBEDS.NOT_FOUND],
         },
       };
     } catch (err) {
@@ -254,14 +163,7 @@ export const usernameCommand: Command = {
       return {
         type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
         data: {
-          embeds: [
-            {
-              title: "Mowojang API unavailable",
-              description: `An error occurred while contacting the Mowojang API. Please check the status page: ${MOWOJANG_STATUS_URL}`,
-              url: MOWOJANG_STATUS_URL,
-              color: 0xe74c3c,
-            },
-          ],
+          embeds: [EMBEDS.STATUS],
         },
       };
     }
@@ -270,9 +172,9 @@ export const usernameCommand: Command = {
 
 export const statsCommand: Command = {
   name: "stats",
-  description: "View Command Usage Statistics",
+  description: "View Statistics",
   execute: async (_interaction, env) => {
-    const stats = await getCommandStats(env);
+    const stats = await getCommandStatistics(env);
     const entries = Object.entries(stats).sort(([, a], [, b]) => b - a);
     const description = entries
       .map(([name, count]) => `**/${name}:** ${count}`)
@@ -283,12 +185,11 @@ export const statsCommand: Command = {
       data: {
         embeds: [
           {
-            title: "Command Usage Stats",
+            title: "Statistics",
             description,
             color: 0x5865f2,
           },
         ],
-        flags: 64,
       },
     };
   },
