@@ -3,7 +3,7 @@ import { getCommandStatistics } from "./stats";
 import { dashUUID } from "./utils";
 import { EMBEDS } from "./embeds";
 import { COMPONENTS } from "./components";
-import type { Command } from "./types";
+import type { Command, StatusEntry } from "./types";
 
 export const pingCommand: Command = {
   name: "ping",
@@ -64,7 +64,7 @@ export const uuidCommand: Command = {
       return {
         type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
         data: {
-          embeds: [EMBEDS.STATUS],
+          embeds: [EMBEDS.STATUSHINT],
         },
       };
     }
@@ -122,7 +122,7 @@ export const usernameCommand: Command = {
       return {
         type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
         data: {
-          embeds: [EMBEDS.STATUS],
+          embeds: [EMBEDS.STATUSHINT],
         },
       };
     }
@@ -154,9 +154,40 @@ export const statsCommand: Command = {
   },
 };
 
+export const statusCommand: Command = {
+  name: "status",
+  description: "View the Status of Mowojang and related Minecraft APIs",
+  execute: async () => {
+    try {
+      const response = await fetch(
+        "https://mowojang-status.pixelic.dev/api/v1/endpoints/statuses?page=1&pageSize=1",
+      );
+      const data = (await response.json()) as StatusEntry[];
+
+      return {
+        type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+        data: {
+          embeds: [EMBEDS.STATUS(data)],
+        },
+      };
+    } catch (err) {
+      console.error(
+        `[status] Failed to fetch statuses: ${err instanceof Error ? err.message : String(err)}`,
+      );
+      return {
+        type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+        data: {
+          embeds: [EMBEDS.STATUSHINT],
+        },
+      };
+    }
+  },
+};
+
 export const commands: Record<string, Command> = {
   [pingCommand.name]: pingCommand,
   [uuidCommand.name]: uuidCommand,
   [usernameCommand.name]: usernameCommand,
   [statsCommand.name]: statsCommand,
+  [statusCommand.name]: statusCommand,
 };

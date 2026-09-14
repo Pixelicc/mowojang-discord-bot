@@ -21,6 +21,20 @@ export interface Command {
   ) => unknown | Promise<unknown>;
 }
 
+export interface StatusResult {
+  status: number;
+  hostname: string;
+  duration: number;
+  success: boolean;
+  timestamp: string;
+}
+
+export interface StatusEntry {
+  name: string;
+  group: string;
+  results: StatusResult[];
+}
+
 export interface DiscordInteractionOption {
   name: string;
   type: number;
