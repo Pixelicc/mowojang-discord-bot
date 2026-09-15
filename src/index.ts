@@ -5,7 +5,7 @@ import {
   verifyKey,
 } from "discord-interactions";
 import { commands } from "./commands";
-import type { DiscordInteraction } from "./types";
+import type { DiscordInteraction } from "../types";
 import { incrementCommandStatistic } from "./stats";
 
 const app = new Hono<{ Bindings: Env }>();

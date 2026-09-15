@@ -1,12 +1,12 @@
 import { dashUUID, undashUUID, UUIDToIntArray } from "./utils";
-import type { StatusEntry } from "./types";
+import type { StatusEntry } from "../types";
 
-const ProfileEmbed = (data: { id: string; name: string }) => ({
+const ProfileEmbed = (data: { UUID: string; username: string }) => ({
   title: "Minecraft Profile",
-  description: `**Username:** \`${data.name}\` (${data.name.length})\n**UUID:**\n \`${undashUUID(data.id)}\`\n\`${dashUUID(data.id)}\`\n\`[I;${UUIDToIntArray(data.id).join(",")}]\``,
+  description: `**Username:** \`${data.username}\` (${data.username.length})\n**UUID:**\n \`${undashUUID(data.UUID)}\`\n\`${dashUUID(data.UUID)}\`\n\`[I;${UUIDToIntArray(data.UUID).join(",")}]\``,
   color: 0xffc2d1,
   thumbnail: {
-    url: `https://mc-heads.net/body/${undashUUID(data.id)}/left`,
+    url: `https://mc-heads.net/body/${undashUUID(data.UUID)}/left`,
   },
 });
 

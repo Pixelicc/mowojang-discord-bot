@@ -1,9 +1,9 @@
 import { InteractionResponseType } from "discord-interactions";
 import { getCommandStatistics } from "./stats";
-import { dashUUID } from "./utils";
+import { getProfile } from "./utils";
 import { EMBEDS } from "./embeds";
 import { COMPONENTS } from "./components";
-import type { Command, StatusEntry } from "./types";
+import type { Command, StatusEntry } from "../types";
 
 export const pingCommand: Command = {
   name: "ping",
@@ -35,18 +35,16 @@ export const uuidCommand: Command = {
     const username = usernameOption?.value?.trim() as string;
     console.log(`[uuid] Looking up UUID for Username '${username}'`);
     try {
-      const res = await fetch(
-        `https://mowojang.matdoes.dev/users/profiles/minecraft/${encodeURIComponent(username)}`,
-      );
-      if (res.status === 200) {
-        const data = (await res.json()) as { id: string; name: string };
-        const formattedUuid = dashUUID(data.id);
-        console.log(`[uuid] Found UUID '${formattedUuid}' for '${data.name}'`);
+      const profile = await getProfile(username);
+      if (profile) {
+        console.log(
+          `[uuid] Found UUID '${profile.UUID}' for '${profile.username}'`,
+        );
         return {
           type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
           data: {
-            embeds: [EMBEDS.PROFILE(data)],
-            components: [COMPONENTS.PROFILE(data)],
+            embeds: [EMBEDS.PROFILE(profile)],
+            components: [COMPONENTS.PROFILE(profile)],
           },
         };
       }
@@ -90,21 +88,16 @@ export const usernameCommand: Command = {
     console.log(`[username] Looking up Username for UUID '${uuid}'`);
     const cleanUuid = uuid.replaceAll("-", "");
     try {
-      const res = await fetch(
-        `https://mowojang.matdoes.dev/session/minecraft/profile/${encodeURIComponent(cleanUuid)}`,
-      );
-      if (res.status === 200) {
-        const data = (await res.json()) as { id: string; name: string };
-        const formattedUuid = dashUUID(data.id);
+      const profile = await getProfile(cleanUuid);
+      if (profile) {
         console.log(
-          `[username] Found Username '${data.name}' for ${formattedUuid}`,
-          interaction.id ?? "",
+          `[username] Found Username '${profile.username}' for ${profile.UUID}`,
         );
         return {
           type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
           data: {
-            embeds: [EMBEDS.PROFILE(data)],
-            components: [COMPONENTS.PROFILE(data)],
+            embeds: [EMBEDS.PROFILE(profile)],
+            components: [COMPONENTS.PROFILE(profile)],
           },
         };
       }
@@ -118,6 +111,58 @@ export const usernameCommand: Command = {
     } catch (err) {
       console.error(
         `[username] Failed to fetch session profile: ${err instanceof Error ? err.message : String(err)}`,
+      );
+      return {
+        type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+        data: {
+          embeds: [EMBEDS.STATUSHINT],
+        },
+      };
+    }
+  },
+};
+
+export const profileCommand: Command = {
+  name: "profile",
+  description: "Look up a Profile by Username or UUID",
+  options: [
+    {
+      type: 3,
+      name: "player",
+      description: "Minecraft Username or UUID",
+      required: true,
+    },
+  ],
+  execute: async (interaction) => {
+    const playerOption = interaction.data?.options?.find(
+      (opt) => opt.name === "player",
+    );
+    const player = (playerOption?.value as string)?.trim().replaceAll("-", "");
+    console.log(`[profile] Looking up profile for '${player}'`);
+    try {
+      const profile = await getProfile(player);
+      if (profile) {
+        console.log(
+          `[profile] Found profile '${profile.username}' (${profile.UUID})`,
+        );
+        return {
+          type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+          data: {
+            embeds: [EMBEDS.PROFILE(profile)],
+            components: [COMPONENTS.PROFILE(profile)],
+          },
+        };
+      }
+      console.log(`[profile] Player '${player}' not found.`);
+      return {
+        type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+        data: {
+          embeds: [EMBEDS.NOT_FOUND],
+        },
+      };
+    } catch (err) {
+      console.error(
+        `[profile] Failed to fetch profile: ${err instanceof Error ? err.message : String(err)}`,
       );
       return {
         type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
@@ -188,6 +233,7 @@ export const commands: Record<string, Command> = {
   [pingCommand.name]: pingCommand,
   [uuidCommand.name]: uuidCommand,
   [usernameCommand.name]: usernameCommand,
+  [profileCommand.name]: profileCommand,
   [statsCommand.name]: statsCommand,
   [statusCommand.name]: statusCommand,
 };

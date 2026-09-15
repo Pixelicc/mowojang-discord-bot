@@ -1,5 +1,5 @@
 import { readFileSync } from "node:fs";
-import { commands } from "./commands";
+import { commands } from "../commands";
 
 function loadDevVars(): Record<string, string> {
   try {
