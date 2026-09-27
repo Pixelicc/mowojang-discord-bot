@@ -1,11 +1,11 @@
+import type { MarkdownSection } from "../types";
+
 const escapeHtml = (value: string): string =>
   value
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;");
-
-type MarkdownSection = { heading: string; body: string };
 
 const renderMarkdownCard = (
   filename: string,

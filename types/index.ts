@@ -59,3 +59,5 @@ export interface DiscordInteraction {
   member?: { user?: DiscordInteractionUser };
   user?: DiscordInteractionUser;
 }
+
+export type MarkdownSection = { heading: string; body: string };
