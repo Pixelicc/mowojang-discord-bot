@@ -3,7 +3,7 @@ import { getCommandStatistics } from "./stats";
 import { getProfile } from "./utils";
 import { EMBEDS } from "./embeds";
 import { COMPONENTS } from "./components";
-import { fetchStatuses, orderGroups, buildStatusPage } from "./status";
+import { fetchStatuses, orderGroups, buildStatusPage } from "./utils/status";
 import type { Command } from "../types";
 
 export const pingCommand: Command = {

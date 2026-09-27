@@ -1,6 +1,6 @@
-import { EMBEDS } from "./embeds";
-import { COMPONENTS } from "./components";
-import type { StatusEntry } from "../types";
+import { EMBEDS } from "../embeds";
+import { COMPONENTS } from "../components";
+import type { StatusEntry } from "../../types";
 
 const STATUS_GROUPS = [
   "Mowojang API",
