@@ -17,6 +17,21 @@ const NotFoundEmbed = {
   color: 0xa67980,
 };
 
+const SessionEmbed = (data: {
+  UUID: string;
+  username: string;
+  skinURL: string | null;
+  capeURL: string | null;
+  slim: boolean;
+}) => ({
+  title: "Minecraft Session Profile",
+  description: `**Username:** \`${data.username}\` (${data.username.length})\n**UUID:**\n \`${undashUUID(data.UUID)}\`\n\`${dashUUID(data.UUID)}\`\n\`[I;${UUIDToIntArray(data.UUID).join(",")}]\`\n**Skin Model:** ${data.slim ? "Slim" : "Classic"}\n**Skin URL:** ${data.skinURL ?? "N/A"}\n**Cape URL:** ${data.capeURL ?? "N/A"}`,
+  color: 0xa67996,
+  thumbnail: {
+    url: `https://mc-heads.net/body/${undashUUID(data.UUID)}/left`,
+  },
+});
+
 const StatusEmbed = {
   title: "Status",
   description:
@@ -60,6 +75,7 @@ const StatusSummaryEmbed = (statuses: StatusEntry[], group: string) => {
 
 export const EMBEDS = {
   PROFILE: ProfileEmbed,
+  SESSION: SessionEmbed,
   STATUS: StatusSummaryEmbed,
   STATUSHINT: StatusEmbed,
   NOT_FOUND: NotFoundEmbed,

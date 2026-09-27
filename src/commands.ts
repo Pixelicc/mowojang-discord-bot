@@ -1,6 +1,7 @@
 import { InteractionResponseType } from "discord-interactions";
 import { getCommandStatistics } from "./stats";
-import { getProfile } from "./utils";
+import { getProfile, getSession } from "./utils";
+import { validateUUID } from "./utils/validators";
 import { EMBEDS } from "./embeds";
 import { COMPONENTS } from "./components";
 import { fetchStatuses, orderGroups, buildStatusPage } from "./utils/status";
@@ -175,6 +176,73 @@ export const profileCommand: Command = {
   },
 };
 
+export const sessionCommand: Command = {
+  name: "session",
+  description:
+    "Look up a Session Profile including skin and cape by Username or UUID",
+  options: [
+    {
+      type: 3,
+      name: "player",
+      description: "Minecraft Username or UUID",
+      required: true,
+    },
+  ],
+  execute: async (interaction) => {
+    const playerOption = interaction.data?.options?.find(
+      (opt) => opt.name === "player",
+    );
+    const player = (playerOption?.value as string)?.trim();
+    console.log(`[session] Looking up session for '${player}'`);
+    try {
+      let uuid = player.replaceAll("-", "");
+      if (!validateUUID(uuid)) {
+        const profile = await getProfile(player);
+        if (!profile) {
+          console.log(`[session] Player '${player}' not found.`);
+          return {
+            type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+            data: {
+              embeds: [EMBEDS.NOT_FOUND],
+            },
+          };
+        }
+        uuid = profile.UUID;
+      }
+      const session = await getSession(uuid);
+      if (session) {
+        console.log(
+          `[session] Found session for '${session.username}' (${session.UUID})`,
+        );
+        return {
+          type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+          data: {
+            embeds: [EMBEDS.SESSION(session)],
+            components: [COMPONENTS.PROFILE(session)],
+          },
+        };
+      }
+      console.log(`[session] Player '${player}' not found.`);
+      return {
+        type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+        data: {
+          embeds: [EMBEDS.NOT_FOUND],
+        },
+      };
+    } catch (err) {
+      console.error(
+        `[session] Failed to fetch session: ${err instanceof Error ? err.message : String(err)}`,
+      );
+      return {
+        type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+        data: {
+          embeds: [EMBEDS.STATUSHINT],
+        },
+      };
+    }
+  },
+};
+
 export const statsCommand: Command = {
   name: "stats",
   description: "View Statistics",
@@ -237,6 +305,7 @@ export const commands: Record<string, Command> = {
   [uuidCommand.name]: uuidCommand,
   [usernameCommand.name]: usernameCommand,
   [profileCommand.name]: profileCommand,
+  [sessionCommand.name]: sessionCommand,
   [statsCommand.name]: statsCommand,
   [statusCommand.name]: statusCommand,
 };
