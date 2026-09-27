@@ -1,10 +1,15 @@
 import { InteractionResponseType } from "discord-interactions";
-import { getCommandStatistics } from "./stats";
-import { getProfile, getSession } from "./utils";
-import { validateUUID } from "./utils/validators";
+import {
+  getProfile,
+  getSession,
+  validateUUID,
+  fetchStatuses,
+  orderGroups,
+  buildStatusPage,
+  getCommandStatistics,
+} from "./utils";
 import { EMBEDS } from "./embeds";
 import { COMPONENTS } from "./components";
-import { fetchStatuses, orderGroups, buildStatusPage } from "./utils/status";
 import type { Command } from "../types";
 
 export const uuidCommand: Command = {

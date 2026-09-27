@@ -1,5 +1,4 @@
-import { undashUUID } from "./uuid";
-import { validatePlayer, validateUUID } from "./validators";
+import { undashUUID, validatePlayer, validateUUID } from "./index";
 
 export const getProfile = async (
   player: string,

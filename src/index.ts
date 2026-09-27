@@ -6,9 +6,12 @@ import {
 } from "discord-interactions";
 import { commands } from "./commands";
 import type { DiscordInteraction } from "../types";
-import { incrementCommandStatistic } from "./stats";
 import { renderPrivacyPage, renderTermsPage } from "./legal";
-import { fetchStatuses, buildStatusPage } from "./utils/status";
+import {
+  fetchStatuses,
+  buildStatusPage,
+  incrementCommandStatistic,
+} from "./utils";
 import { EMBEDS } from "./embeds";
 
 const app = new Hono<{ Bindings: Env }>();
