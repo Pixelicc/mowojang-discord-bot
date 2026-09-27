@@ -7,18 +7,6 @@ import { COMPONENTS } from "./components";
 import { fetchStatuses, orderGroups, buildStatusPage } from "./utils/status";
 import type { Command } from "../types";
 
-export const pingCommand: Command = {
-  name: "ping",
-  description: "Replies with pong!",
-  execute: () => {
-    console.log("[ping] Executed /ping");
-    return {
-      type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-      data: { content: "🏓 Pong!", flags: 64 },
-    };
-  },
-};
-
 export const uuidCommand: Command = {
   name: "uuid",
   description: "Convert a Minecraft Username to its UUID",
@@ -301,7 +289,6 @@ export const statusCommand: Command = {
 };
 
 export const commands: Record<string, Command> = {
-  [pingCommand.name]: pingCommand,
   [uuidCommand.name]: uuidCommand,
   [usernameCommand.name]: usernameCommand,
   [profileCommand.name]: profileCommand,

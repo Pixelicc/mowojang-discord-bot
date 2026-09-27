@@ -40,10 +40,6 @@ app.post("/interactions", async (c) => {
 
   const interaction: DiscordInteraction = JSON.parse(body);
 
-  if (interaction.type === InteractionType.PING) {
-    return c.json({ type: InteractionResponseType.PONG });
-  }
-
   if (
     interaction.type === InteractionType.APPLICATION_COMMAND &&
     interaction.data
