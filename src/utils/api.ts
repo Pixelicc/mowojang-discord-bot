@@ -5,7 +5,12 @@ export const getProfile = async (
 ): Promise<null | { UUID: string; username: string }> => {
   if (!validatePlayer(player)) return null;
 
-  const response = await fetch(`https://mowojang.matdoes.dev/${player}`);
+  const response = await fetch(`https://mowojang.matdoes.dev/${player}`, {
+    cf: {
+      cacheTtl: 300,
+      cacheEverything: true,
+    },
+  });
   if (!response.ok) {
     return null;
   }
