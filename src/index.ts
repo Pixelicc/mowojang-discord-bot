@@ -7,10 +7,15 @@ import {
 import { commands } from "./commands";
 import type { DiscordInteraction } from "../types";
 import { incrementCommandStatistic } from "./stats";
+import { renderPrivacyPage, renderTermsPage } from "./legal";
+import { fetchStatuses, buildStatusPage } from "./status";
+import { EMBEDS } from "./embeds";
 
 const app = new Hono<{ Bindings: Env }>();
 
 app.get("/", (c) => c.text("Mowojang Discord Bot is running."));
+app.get("/legal/privacy", (c) => c.html(renderPrivacyPage()));
+app.get("/legal/terms", (c) => c.html(renderTermsPage()));
 
 app.post("/interactions", async (c) => {
   const signature = c.req.header("x-signature-ed25519");
@@ -58,6 +63,33 @@ app.post("/interactions", async (c) => {
       data: { content: "Unknown command" },
     });
   }
+
+  if (interaction.type === InteractionType.MESSAGE_COMPONENT) {
+    if (interaction.data?.custom_id?.startsWith("status:")) {
+      const group = interaction.data.custom_id.slice("status:".length);
+      try {
+        const statuses = await fetchStatuses();
+        return c.json({
+          type: InteractionResponseType.UPDATE_MESSAGE,
+          data: buildStatusPage(statuses, group),
+        });
+      } catch (err) {
+        console.error(
+          `[status] Failed to fetch statuses: ${err instanceof Error ? err.message : String(err)}`,
+        );
+        return c.json({
+          type: InteractionResponseType.UPDATE_MESSAGE,
+          data: { embeds: [EMBEDS.STATUSHINT], components: [] },
+        });
+      }
+    }
+
+    console.warn(
+      `Received unknown component custom_id '${interaction.data?.custom_id}'`,
+    );
+    return c.json({ type: InteractionResponseType.DEFERRED_UPDATE_MESSAGE });
+  }
+
   console.warn(`Unhandled interaction type ${interaction.type}`);
   return c.text("Unknown interaction type", 400);
 });

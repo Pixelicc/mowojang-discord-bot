@@ -22,6 +22,17 @@ const ProfileComponents = (data: { UUID: string; username: string }) => ({
   ],
 });
 
+const StatusComponents = (groups: string[], activeGroup: string) => ({
+  type: 1,
+  components: groups.map((group) => ({
+    type: 2,
+    style: group === activeGroup ? 1 : 2,
+    label: group,
+    custom_id: `status:${group}`,
+  })),
+});
+
 export const COMPONENTS = {
   PROFILE: ProfileComponents,
+  STATUS: StatusComponents,
 };

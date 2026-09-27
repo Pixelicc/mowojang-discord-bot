@@ -53,6 +53,8 @@ export interface DiscordInteraction {
     id?: string;
     name: string;
     options?: DiscordInteractionOption[];
+    custom_id?: string;
+    component_type?: number;
   };
   member?: { user?: DiscordInteractionUser };
   user?: DiscordInteractionUser;

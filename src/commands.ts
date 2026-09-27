@@ -3,7 +3,8 @@ import { getCommandStatistics } from "./stats";
 import { getProfile } from "./utils";
 import { EMBEDS } from "./embeds";
 import { COMPONENTS } from "./components";
-import type { Command, StatusEntry } from "../types";
+import { fetchStatuses, orderGroups, buildStatusPage } from "./status";
+import type { Command } from "../types";
 
 export const pingCommand: Command = {
   name: "ping",
@@ -191,7 +192,7 @@ export const statsCommand: Command = {
           {
             title: "Statistics",
             description,
-            color: 0xffc2d1,
+            color: 0x7980a6,
           },
         ],
       },
@@ -204,16 +205,18 @@ export const statusCommand: Command = {
   description: "View the Status of Mowojang and related Minecraft APIs",
   execute: async () => {
     try {
-      const response = await fetch(
-        "https://mowojang-status.pixelic.dev/api/v1/endpoints/statuses?page=1&pageSize=1",
-      );
-      const data = (await response.json()) as StatusEntry[];
+      const statuses = await fetchStatuses();
+      const [defaultGroup] = orderGroups(statuses);
+      if (!defaultGroup) {
+        return {
+          type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+          data: { embeds: [EMBEDS.STATUSHINT] },
+        };
+      }
 
       return {
         type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-        data: {
-          embeds: [EMBEDS.STATUS(data)],
-        },
+        data: buildStatusPage(statuses, defaultGroup),
       };
     } catch (err) {
       console.error(
