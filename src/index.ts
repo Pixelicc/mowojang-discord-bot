@@ -7,6 +7,7 @@ import {
 import { commands } from "./commands";
 import type { DiscordInteraction } from "../types";
 import { renderPrivacyPage, renderTermsPage } from "./legal";
+import { renderLandingPage } from "./landing";
 import {
   fetchStatuses,
   buildStatusPage,
@@ -16,7 +17,7 @@ import { EMBEDS } from "./embeds";
 
 const app = new Hono<{ Bindings: Env }>();
 
-app.get("/", (c) => c.text("Mowojang Discord Bot is running."));
+app.get("/", (c) => c.html(renderLandingPage(c.env.DISCORD_APPLICATION_ID)));
 app.get("/legal/privacy", (c) => c.html(renderPrivacyPage()));
 app.get("/legal/terms", (c) => c.html(renderTermsPage()));
 
