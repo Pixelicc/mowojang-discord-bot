@@ -182,6 +182,7 @@ export const renderLandingPage = (clientId: string): string => {
   }
   .footer { margin-top: 2rem; font-size: 0.8rem; }
   .footer a { color: #9a9ab0; }
+  .disclaimer { color: #d6bd72; font-size: 0.75rem; font-weight: bold; margin: 0.6rem 0 0; }
 </style>
 </head>
 <body>
@@ -211,7 +212,8 @@ ${renderCommandList()}
       </div>
 
       <div class="footer">
-        <a href="/legal/privacy">Privacy Policy</a> &middot; <a href="/legal/terms">Terms of Service</a>
+        <a href="/legal/privacy">Privacy Policy</a> &middot; <a href="/legal/terms">Terms of Service</a> &middot; <a href="https://github.com/pixelicc/mowojang-discord-bot" target="_blank">Sourcecode</a>
+        <p class="disclaimer">This Project is not affiliated or endorsed by Mojang Studios.</p>
       </div>
     </div>
   </div>
