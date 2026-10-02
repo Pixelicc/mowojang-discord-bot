@@ -1,16 +1,11 @@
+import type { HTMLPage } from "../types";
+
 export const escapeHtml = (value: string): string =>
   value
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;");
-
-interface HtmlPageOptions {
-  title: string;
-  filename: string;
-  styles: string;
-  content: string;
-}
 
 const SHARED_STYLES = `
   body {
@@ -52,7 +47,7 @@ export const renderHtmlPage = ({
   filename,
   styles,
   content,
-}: HtmlPageOptions): string => `<!DOCTYPE html>
+}: HTMLPage): string => `<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">

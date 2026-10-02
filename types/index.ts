@@ -61,3 +61,10 @@ export interface DiscordInteraction {
 }
 
 export type MarkdownSection = { heading: string; body: string };
+
+export type HTMLPage = {
+  title: string;
+  filename: string;
+  styles: string;
+  content: string;
+};
