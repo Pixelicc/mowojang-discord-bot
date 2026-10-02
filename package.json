@@ -7,16 +7,31 @@
     "deploy": "wrangler deploy",
     "dev": "wrangler dev",
     "start": "wrangler dev",
-    "cf-typegen": "wrangler types",
-    "register": "tsx src/scripts/register.ts"
+    "types": "wrangler types",
+    "register": "tsx src/scripts/register.ts",
+    "lint:check": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "dependencies": {
     "discord-interactions": "^4.4.0",
     "hono": "^4.12.12"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@types/node": "^25.9.6",
+    "@typescript-eslint/eslint-plugin": "^8.71.0",
+    "@typescript-eslint/parser": "^8.71.0",
+    "eslint": "^10.11.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.6",
+    "jiti": "^2.7.0",
+    "prettier": "^3.9.9",
     "tsx": "^4.23.13",
+    "typescript-eslint": "^8.71.0",
     "wrangler": "^4.131.1"
+  },
+  "allowScripts": {
+    "workerd": true,
+    "esbuild": true
   }
 }

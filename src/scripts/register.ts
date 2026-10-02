@@ -9,7 +9,7 @@ function loadDevVars(): Record<string, string> {
       const trimmed = line.trim();
       if (!trimmed || trimmed.startsWith("#")) continue;
       const [key, ...rest] = trimmed.split("=");
-      vars[key as string] = rest.join("=").replace(/^"|"$/g, "");
+      vars[key!] = rest.join("=").replace(/^"|"$/g, "");
     }
     return vars;
   } catch {
