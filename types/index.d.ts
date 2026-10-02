@@ -57,11 +57,14 @@ export interface DiscordInteraction {
   user?: DiscordInteractionUser;
 }
 
-export type MarkdownSection = { heading: string; body: string };
+export interface MarkdownSection {
+  heading: string;
+  body: string;
+}
 
-export type HTMLPage = {
+export interface HTMLPage {
   title: string;
   filename: string;
   styles: string;
   content: string;
-};
+}
