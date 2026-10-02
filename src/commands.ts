@@ -25,7 +25,7 @@ export const uuidCommand: Command = {
   ],
   execute: async (interaction) => {
     const usernameOption = interaction.data?.options?.find((opt) => opt.name === "username");
-    const username = usernameOption?.value?.trim() as string;
+    const username = usernameOption?.value?.trim()!;
     console.log(`[uuid] Looking up UUID for Username '${username}'`);
     try {
       const profile = await getProfile(username);
@@ -71,7 +71,7 @@ export const usernameCommand: Command = {
   ],
   execute: async (interaction) => {
     const uuidOption = interaction.data?.options?.find((opt) => opt.name === "uuid");
-    const uuid = uuidOption?.value?.trim() as string;
+    const uuid = uuidOption?.value?.trim()!;
     console.log(`[username] Looking up Username for UUID '${uuid}'`);
     const cleanUuid = uuid.replaceAll("-", "");
     try {
@@ -118,7 +118,7 @@ export const profileCommand: Command = {
   ],
   execute: async (interaction) => {
     const playerOption = interaction.data?.options?.find((opt) => opt.name === "player");
-    const player = (playerOption?.value as string)?.trim().replaceAll("-", "");
+    const player = playerOption?.value!?.trim().replaceAll("-", "");
     console.log(`[profile] Looking up profile for '${player}'`);
     try {
       const profile = await getProfile(player);
@@ -164,7 +164,7 @@ export const sessionCommand: Command = {
   ],
   execute: async (interaction) => {
     const playerOption = interaction.data?.options?.find((opt) => opt.name === "player");
-    const player = (playerOption?.value as string)?.trim();
+    const player = playerOption?.value!?.trim();
     console.log(`[session] Looking up session for '${player}'`);
     try {
       let uuid = player.replaceAll("-", "");
