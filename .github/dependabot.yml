@@ -1,0 +1,31 @@
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    cooldown:
+      default-days: 7
+    ignore:
+      - dependency-name: "@types/node"
+        update-types:
+          - "version-update:semver-patch"
+          - "version-update:semver-minor"
+      - dependency-name: "*prettier*"
+        update-types:
+          - "version-update:semver-patch"
+          - "version-update:semver-minor"
+      - dependency-name: "*eslint*"
+        update-types:
+          - "version-update:semver-patch"
+          - "version-update:semver-minor"
+      - dependency-name: "jiti"
+        update-types:
+          - "version-update:semver-patch"
+          - "version-update:semver-minor"
+      - dependency-name: "tsx"
+        update-types:
+          - "version-update:semver-patch"
+      - dependency-name: "wrangler"
+        update-types:
+          - "version-update:semver-patch"
