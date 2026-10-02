@@ -1,12 +1,6 @@
 import { commands } from "./commands";
 import { dashUUID, undashUUID, UUIDToIntArray } from "./utils";
-
-const escapeHtml = (value: string): string =>
-  value
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
+import { escapeHtml, renderHtmlPage } from "./html";
 
 const renderMarkdown = (value: string): string =>
   escapeHtml(value)
@@ -88,45 +82,10 @@ const renderCommandList = (): string =>
 export const renderLandingPage = (clientId: string): string => {
   const inviteUrl = `https://discord.com/oauth2/authorize?client_id=${clientId}`;
 
-  return `<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mowojang Discord Bot</title>
-<style>
-  body {
-    margin: 0;
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: #1e1e2e;
-    font-family: "Fira Code", Consolas, monospace;
-    padding: 2rem;
-    box-sizing: border-box;
-  }
-  .card {
-    width: 100%;
-    max-width: 1200px;
-    background: #2b2b3a;
-    border-radius: 10px;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
-    overflow: hidden;
-  }
-  .titlebar {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    padding: 0.75rem 1rem;
-    background: #232332;
-  }
-  .dots { display: flex; gap: 0.25rem; }
-  .dot { width: 12px; height: 12px; border-radius: 50%; }
-  .dot.red { background: #ff5f66; }
-  .dot.yellow { background: #ffbd5e; }
-  .dot.green { background: #27c96f; }
-  .tab { color: #9a9ab0; font-size: 0.85rem; }
+  return renderHtmlPage({
+    title: "Mowojang Discord Bot",
+    filename: "README.md",
+    styles: `
   .content {
     padding: 1.5rem 2rem 2rem;
     color: #d4d4e0;
@@ -183,18 +142,8 @@ export const renderLandingPage = (clientId: string): string => {
   .footer { margin-top: 2rem; font-size: 0.8rem; }
   .footer a { color: #9a9ab0; }
   .disclaimer { color: #d6bd72; font-size: 0.75rem; font-weight: bold; margin: 0.6rem 0 0; }
-</style>
-</head>
-<body>
-  <div class="card">
-    <div class="titlebar">
-      <div class="dots">
-        <div class="dot red"></div>
-        <div class="dot yellow"></div>
-        <div class="dot green"></div>
-      </div>
-      <div class="tab">Mowojang/README.md</div>
-    </div>
+`,
+    content: `
     <div class="content">
       <div class="title"># Mowojang Discord Bot</div>
       <p class="tagline">Look up Minecraft profiles, UUIDs, sessions and API status right from Discord.</p>
@@ -216,7 +165,6 @@ ${renderCommandList()}
         <p class="disclaimer">This Project is not affiliated or endorsed by Mojang Studios.</p>
       </div>
     </div>
-  </div>
-</body>
-</html>`;
+`,
+  });
 };
