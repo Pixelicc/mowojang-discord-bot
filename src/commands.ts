@@ -24,17 +24,13 @@ export const uuidCommand: Command = {
     },
   ],
   execute: async (interaction) => {
-    const usernameOption = interaction.data?.options?.find(
-      (opt) => opt.name === "username",
-    );
+    const usernameOption = interaction.data?.options?.find((opt) => opt.name === "username");
     const username = usernameOption?.value?.trim() as string;
     console.log(`[uuid] Looking up UUID for Username '${username}'`);
     try {
       const profile = await getProfile(username);
       if (profile) {
-        console.log(
-          `[uuid] Found UUID '${profile.UUID}' for '${profile.username}'`,
-        );
+        console.log(`[uuid] Found UUID '${profile.UUID}' for '${profile.username}'`);
         return {
           type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
           data: {
@@ -51,9 +47,7 @@ export const uuidCommand: Command = {
         },
       };
     } catch (err) {
-      console.error(
-        `[uuid] Failed to fetch profile: ${err instanceof Error ? err.message : String(err)}`,
-      );
+      console.error(`[uuid] Failed to fetch profile: ${err instanceof Error ? err.message : String(err)}`);
       return {
         type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
         data: {
@@ -76,18 +70,14 @@ export const usernameCommand: Command = {
     },
   ],
   execute: async (interaction) => {
-    const uuidOption = interaction.data?.options?.find(
-      (opt) => opt.name === "uuid",
-    );
+    const uuidOption = interaction.data?.options?.find((opt) => opt.name === "uuid");
     const uuid = uuidOption?.value?.trim() as string;
     console.log(`[username] Looking up Username for UUID '${uuid}'`);
     const cleanUuid = uuid.replaceAll("-", "");
     try {
       const profile = await getProfile(cleanUuid);
       if (profile) {
-        console.log(
-          `[username] Found Username '${profile.username}' for ${profile.UUID}`,
-        );
+        console.log(`[username] Found Username '${profile.username}' for ${profile.UUID}`);
         return {
           type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
           data: {
@@ -104,9 +94,7 @@ export const usernameCommand: Command = {
         },
       };
     } catch (err) {
-      console.error(
-        `[username] Failed to fetch session profile: ${err instanceof Error ? err.message : String(err)}`,
-      );
+      console.error(`[username] Failed to fetch session profile: ${err instanceof Error ? err.message : String(err)}`);
       return {
         type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
         data: {
@@ -129,17 +117,13 @@ export const profileCommand: Command = {
     },
   ],
   execute: async (interaction) => {
-    const playerOption = interaction.data?.options?.find(
-      (opt) => opt.name === "player",
-    );
+    const playerOption = interaction.data?.options?.find((opt) => opt.name === "player");
     const player = (playerOption?.value as string)?.trim().replaceAll("-", "");
     console.log(`[profile] Looking up profile for '${player}'`);
     try {
       const profile = await getProfile(player);
       if (profile) {
-        console.log(
-          `[profile] Found profile '${profile.username}' (${profile.UUID})`,
-        );
+        console.log(`[profile] Found profile '${profile.username}' (${profile.UUID})`);
         return {
           type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
           data: {
@@ -156,9 +140,7 @@ export const profileCommand: Command = {
         },
       };
     } catch (err) {
-      console.error(
-        `[profile] Failed to fetch profile: ${err instanceof Error ? err.message : String(err)}`,
-      );
+      console.error(`[profile] Failed to fetch profile: ${err instanceof Error ? err.message : String(err)}`);
       return {
         type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
         data: {
@@ -171,8 +153,7 @@ export const profileCommand: Command = {
 
 export const sessionCommand: Command = {
   name: "session",
-  description:
-    "Look up a Session Profile including skin and cape by Username or UUID",
+  description: "Look up a Session Profile including skin and cape by Username or UUID",
   options: [
     {
       type: 3,
@@ -182,9 +163,7 @@ export const sessionCommand: Command = {
     },
   ],
   execute: async (interaction) => {
-    const playerOption = interaction.data?.options?.find(
-      (opt) => opt.name === "player",
-    );
+    const playerOption = interaction.data?.options?.find((opt) => opt.name === "player");
     const player = (playerOption?.value as string)?.trim();
     console.log(`[session] Looking up session for '${player}'`);
     try {
@@ -204,9 +183,7 @@ export const sessionCommand: Command = {
       }
       const session = await getSession(uuid);
       if (session) {
-        console.log(
-          `[session] Found session for '${session.username}' (${session.UUID})`,
-        );
+        console.log(`[session] Found session for '${session.username}' (${session.UUID})`);
         return {
           type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
           data: {
@@ -223,9 +200,7 @@ export const sessionCommand: Command = {
         },
       };
     } catch (err) {
-      console.error(
-        `[session] Failed to fetch session: ${err instanceof Error ? err.message : String(err)}`,
-      );
+      console.error(`[session] Failed to fetch session: ${err instanceof Error ? err.message : String(err)}`);
       return {
         type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
         data: {
@@ -242,9 +217,7 @@ export const statsCommand: Command = {
   execute: async (_interaction, env) => {
     const stats = await getCommandStatistics(env);
     const entries = Object.entries(stats).sort(([, a], [, b]) => b - a);
-    const description = entries
-      .map(([name, count]) => `**/${name}:** ${count}`)
-      .join("\n");
+    const description = entries.map(([name, count]) => `**/${name}:** ${count}`).join("\n");
 
     return {
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
@@ -280,9 +253,7 @@ export const statusCommand: Command = {
         data: buildStatusPage(statuses, defaultGroup),
       };
     } catch (err) {
-      console.error(
-        `[status] Failed to fetch statuses: ${err instanceof Error ? err.message : String(err)}`,
-      );
+      console.error(`[status] Failed to fetch statuses: ${err instanceof Error ? err.message : String(err)}`);
       return {
         type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
         data: {

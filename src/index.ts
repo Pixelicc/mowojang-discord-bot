@@ -1,18 +1,10 @@
 import { Hono } from "hono";
-import {
-  InteractionResponseType,
-  InteractionType,
-  verifyKey,
-} from "discord-interactions";
+import { InteractionResponseType, InteractionType, verifyKey } from "discord-interactions";
 import { commands } from "./commands";
 import type { DiscordInteraction } from "../types";
 import { renderPrivacyPage, renderTermsPage } from "./legal";
 import { renderLandingPage } from "./landing";
-import {
-  fetchStatuses,
-  buildStatusPage,
-  incrementCommandStatistic,
-} from "./utils";
+import { fetchStatuses, buildStatusPage, incrementCommandStatistic } from "./utils";
 import { EMBEDS } from "./embeds";
 
 const app = new Hono<{ Bindings: Env }>();
@@ -31,12 +23,7 @@ app.post("/interactions", async (c) => {
     return c.text("Bad request signature", 401);
   }
 
-  const isValid = await verifyKey(
-    body,
-    signature,
-    timestamp,
-    c.env.DISCORD_PUBLIC_KEY,
-  );
+  const isValid = await verifyKey(body, signature, timestamp, c.env.DISCORD_PUBLIC_KEY);
   if (!isValid) {
     console.warn("Invalid interaction request signature");
     return c.text("Bad request signature", 401);
@@ -44,10 +31,7 @@ app.post("/interactions", async (c) => {
 
   const interaction: DiscordInteraction = JSON.parse(body);
 
-  if (
-    interaction.type === InteractionType.APPLICATION_COMMAND &&
-    interaction.data
-  ) {
+  if (interaction.type === InteractionType.APPLICATION_COMMAND && interaction.data) {
     const commandName = interaction.data.name;
     const command = commands[commandName];
 
@@ -74,9 +58,7 @@ app.post("/interactions", async (c) => {
           data: buildStatusPage(statuses, group),
         });
       } catch (err) {
-        console.error(
-          `[status] Failed to fetch statuses: ${err instanceof Error ? err.message : String(err)}`,
-        );
+        console.error(`[status] Failed to fetch statuses: ${err instanceof Error ? err.message : String(err)}`);
         return c.json({
           type: InteractionResponseType.UPDATE_MESSAGE,
           data: { embeds: [EMBEDS.STATUSHINT], components: [] },
@@ -84,9 +66,7 @@ app.post("/interactions", async (c) => {
       }
     }
 
-    console.warn(
-      `Received unknown component custom_id '${interaction.data?.custom_id}'`,
-    );
+    console.warn(`Received unknown component custom_id '${interaction.data?.custom_id}'`);
     return c.json({ type: InteractionResponseType.DEFERRED_UPDATE_MESSAGE });
   }
 

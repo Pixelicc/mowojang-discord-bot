@@ -30,22 +30,18 @@ const response = await fetch(URL, {
     Authorization: `Bot ${token}`,
   },
   body: JSON.stringify(
-    Object.values(commands).map(
-      ({ name, description, options, integration_types, contexts }) => ({
-        name,
-        description,
-        options,
-        integration_types: integration_types ?? [0, 1],
-        contexts: contexts ?? [0, 1, 2],
-      }),
-    ),
+    Object.values(commands).map(({ name, description, options, integration_types, contexts }) => ({
+      name,
+      description,
+      options,
+      integration_types: integration_types ?? [0, 1],
+      contexts: contexts ?? [0, 1, 2],
+    })),
   ),
 });
 
 if (!response.ok) {
-  console.error(
-    `Failed to register commands: ${response.status} ${await response.text()}`,
-  );
+  console.error(`Failed to register commands: ${response.status} ${await response.text()}`);
   process.exit(1);
 }
 

@@ -44,5 +44,4 @@ export const validateUsername = (username: string): boolean => {
  * validatePlayer("14727fae-fbdc-4aff-848c-d2713eb9939e"); // true
  * ```
  */
-export const validatePlayer = (player: string): boolean =>
-  validateUUID(player) || validateUsername(player);
+export const validatePlayer = (player: string): boolean => validateUUID(player) || validateUsername(player);

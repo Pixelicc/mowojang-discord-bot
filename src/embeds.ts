@@ -12,8 +12,7 @@ const ProfileEmbed = (data: { UUID: string; username: string }) => ({
 
 const NotFoundEmbed = {
   title: "Error",
-  description:
-    "Could not find a Minecraft Profile for the given Username/UUID.",
+  description: "Could not find a Minecraft Profile for the given Username/UUID.",
   color: 0xa67980,
 };
 
@@ -34,8 +33,7 @@ const SessionEmbed = (data: {
 
 const StatusEmbed = {
   title: "Status",
-  description:
-    "Check the current status of the Mowojang API and other Minecraft related APIs.",
+  description: "Check the current status of the Mowojang API and other Minecraft related APIs.",
   color: 0xa67980,
   url: "https://mowojang-status.pixelic.dev/",
 };
@@ -45,31 +43,23 @@ const StatusSummaryEmbed = (statuses: StatusEntry[], group: string) => {
 
   return {
     title: `Status — ${group}`,
-    description:
-      "Latest status checks for Mowojang and related Minecraft APIs.",
-    color: groupedStatuses.every((status) => status.results[0]?.success)
-      ? 0x80a679
-      : 0xa67980,
+    description: "Latest status checks for Mowojang and related Minecraft APIs.",
+    color: groupedStatuses.every((status) => status.results[0]?.success) ? 0x80a679 : 0xa67980,
     url: "https://mowojang-status.pixelic.dev/",
-    fields: Array.from(
-      { length: Math.ceil(groupedStatuses.length / 5) },
-      (_, index) => {
-        const chunk = groupedStatuses.slice(index * 5, index * 5 + 5);
-        return {
-          name: "Endpoints",
-          value: chunk
-            .map((status) => {
-              const result = status.results[0];
-              const latency = result
-                ? `${(result.duration / 1000000).toFixed(0)} ms`
-                : "N/A";
-              return `${result?.success ? "✅" : "❌"} **${status.name}**\n${result?.status ?? "N/A"} | ${result?.hostname ?? "N/A"} | ${latency}`;
-            })
-            .join("\n\n"),
-          inline: false,
-        };
-      },
-    ),
+    fields: Array.from({ length: Math.ceil(groupedStatuses.length / 5) }, (_, index) => {
+      const chunk = groupedStatuses.slice(index * 5, index * 5 + 5);
+      return {
+        name: "Endpoints",
+        value: chunk
+          .map((status) => {
+            const result = status.results[0];
+            const latency = result ? `${(result.duration / 1000000).toFixed(0)} ms` : "N/A";
+            return `${result?.success ? "✅" : "❌"} **${status.name}**\n${result?.status ?? "N/A"} | ${result?.hostname ?? "N/A"} | ${latency}`;
+          })
+          .join("\n\n"),
+        inline: false,
+      };
+    }),
   };
 };
 
