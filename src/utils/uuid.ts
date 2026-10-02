@@ -1,3 +1,15 @@
+/**
+ * @link https://github.com/Pixelicc/mowojang/blob/main/src/utils.ts
+ */
+
+/**
+ * Adds dashes to a UUID string if not already dashed
+ *
+ * @example
+ * ```TS
+ * dashUUID("14727faefbdc4aff848cd2713eb9939e"); // "14727fae-fbdc-4aff-848c-d2713eb9939e"
+ * ```
+ */
 export const dashUUID = (UUID: string): string => {
   const clean = undashUUID(UUID);
   if (clean.length === 32) {
@@ -6,6 +18,14 @@ export const dashUUID = (UUID: string): string => {
   return UUID;
 };
 
+/**
+ * Removes dashes from a UUID string
+ *
+ * @example
+ * ```TS
+ * undashUUID("14727fae-fbdc-4aff-848c-d2713eb9939e"); // "14727faefbdc4aff848cd2713eb9939e"
+ * ```
+ */
 export const undashUUID = (UUID: string): string => {
   return UUID.replaceAll("-", "");
 };
