@@ -1,8 +1,6 @@
 import { undashUUID, validatePlayer, validateUUID } from "./index";
 
-export const getProfile = async (
-  player: string,
-): Promise<null | { UUID: string; username: string }> => {
+export const getProfile = async (player: string): Promise<null | { UUID: string; username: string }> => {
   if (!validatePlayer(player)) return null;
 
   const response = await fetch(`https://mowojang.matdoes.dev/${player}`, {
@@ -32,15 +30,12 @@ export const getSession = async (
 }> => {
   if (!validateUUID(UUID)) return null;
 
-  const response = await fetch(
-    `https://mowojang.matdoes.dev/session/minecraft/profile/${undashUUID(UUID)}`,
-    {
-      cf: {
-        cacheTtl: 300,
-        cacheEverything: true,
-      },
+  const response = await fetch(`https://mowojang.matdoes.dev/session/minecraft/profile/${undashUUID(UUID)}`, {
+    cf: {
+      cacheTtl: 300,
+      cacheEverything: true,
     },
-  );
+  });
   if (!response.ok) {
     return null;
   }
@@ -49,9 +44,7 @@ export const getSession = async (
     name: string;
     properties: { name: string; value: string }[];
   }>();
-  const texturesProperty = data.properties.find(
-    (property) => property.name === "textures",
-  );
+  const texturesProperty = data.properties.find((property) => property.name === "textures");
   if (!texturesProperty) return null;
 
   const decoded = JSON.parse(atob(texturesProperty.value)) as {

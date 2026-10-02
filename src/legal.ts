@@ -1,11 +1,7 @@
 import type { MarkdownSection } from "../types";
 import { escapeHtml, renderHtmlPage } from "./html";
 
-const renderMarkdownCard = (
-  filename: string,
-  title: string,
-  sections: MarkdownSection[],
-): string => {
+const renderMarkdownCard = (filename: string, title: string, sections: MarkdownSection[]): string => {
   const body = sections
     .map(
       ({ heading, body }) =>
@@ -98,15 +94,7 @@ const TERMS_OF_SERVICE_SECTIONS: MarkdownSection[] = [
 ];
 
 export const renderPrivacyPage = (): string =>
-  renderMarkdownCard(
-    "Privacy-Policy.md",
-    "Mowojang Discord Bot - Privacy Policy",
-    PRIVACY_POLICY_SECTIONS,
-  );
+  renderMarkdownCard("Privacy-Policy.md", "Mowojang Discord Bot - Privacy Policy", PRIVACY_POLICY_SECTIONS);
 
 export const renderTermsPage = (): string =>
-  renderMarkdownCard(
-    "Terms-of-Service.md",
-    "Mowojang Discord Bot - Terms of Service",
-    TERMS_OF_SERVICE_SECTIONS,
-  );
+  renderMarkdownCard("Terms-of-Service.md", "Mowojang Discord Bot - Terms of Service", TERMS_OF_SERVICE_SECTIONS);

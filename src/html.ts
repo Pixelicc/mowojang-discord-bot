@@ -1,11 +1,7 @@
 import type { HTMLPage } from "../types";
 
 export const escapeHtml = (value: string): string =>
-  value
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
+  value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 
 const SHARED_STYLES = `
   body {
@@ -42,12 +38,7 @@ const SHARED_STYLES = `
   .tab { color: #9a9ab0; font-size: 0.85rem; }
 `;
 
-export const renderHtmlPage = ({
-  title,
-  filename,
-  styles,
-  content,
-}: HTMLPage): string => `<!DOCTYPE html>
+export const renderHtmlPage = ({ title, filename, styles, content }: HTMLPage): string => `<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">

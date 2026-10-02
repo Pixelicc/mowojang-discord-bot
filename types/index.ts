@@ -15,10 +15,7 @@ export interface Command {
   options?: CommandOption[];
   integration_types?: number[];
   contexts?: number[];
-  execute: (
-    interaction: DiscordInteraction,
-    env: Env,
-  ) => unknown | Promise<unknown>;
+  execute: (interaction: DiscordInteraction, env: Env) => unknown | Promise<unknown>;
 }
 
 export interface StatusResult {

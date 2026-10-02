@@ -33,7 +33,6 @@ export const undashUUID = (UUID: string): string => {
 export const UUIDToIntArray = (UUID: string): number[] => {
   return Array.from(
     { length: 4 },
-    (_, index) =>
-      Number.parseInt(undashUUID(UUID).slice(index * 8, index * 8 + 8), 16) | 0,
+    (_, index) => Number.parseInt(undashUUID(UUID).slice(index * 8, index * 8 + 8), 16) | 0,
   );
 };
