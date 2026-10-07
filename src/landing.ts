@@ -146,7 +146,7 @@ export const renderLandingPage = (clientId: string): string => {
     content: `
     <div class="content">
       <div class="title"># Mowojang Discord Bot</div>
-      <p class="tagline">Look up Minecraft profiles, UUIDs, sessions and API status right from Discord.</p>
+      <p class="tagline">Look up Minecraft profiles, sessions and API Status right from Discord.</p>
       <a class="invite" href="${inviteUrl}">Add to Discord</a>
 
       <div class="section-title"># Commands</div>
