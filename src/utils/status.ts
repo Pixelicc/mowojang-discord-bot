@@ -7,7 +7,7 @@ const STATUS_GROUPS = ["Mowojang API", "Seraph API", "Minecraft API", "Other API
 export async function fetchStatuses(): Promise<StatusEntry[]> {
   const response = await fetch("https://mowojang-status.pixelic.dev/api/v1/endpoints/statuses?page=1&pageSize=1", {
     cf: {
-      cacheTtl: 60,
+      cacheTtl: 300,
       cacheEverything: true,
     },
   });
