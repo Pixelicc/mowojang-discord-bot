@@ -161,7 +161,7 @@ ${renderCommandList()}
       </div>
 
       <div class="footer">
-        <a href="/legal/privacy">Privacy Policy</a> &middot; <a href="/legal/terms">Terms of Service</a> &middot; <a href="https://github.com/pixelicc/mowojang-discord-bot" target="_blank">Sourcecode</a>
+        <a href="https://github.com/pixelicc/mowojang-discord-bot" target="_blank">Sourcecode</a> &middot <a href="/legal/privacy">Privacy Policy</a> &middot <a href="/legal/terms">Terms of Service</a>
         <p class="disclaimer">This Project is not affiliated or endorsed by Mojang Studios.</p>
       </div>
     </div>
