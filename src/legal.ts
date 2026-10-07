@@ -66,14 +66,14 @@ const PRIVACY_POLICY_SECTIONS: MarkdownSection[] = [
 ];
 
 const TERMS_OF_SERVICE_SECTIONS: MarkdownSection[] = [
-  { heading: "Last Updated", body: "2026-09-27" },
+  { heading: "Last Updated", body: "2026-10-07" },
   {
     heading: "Acceptance",
     body: "By adding or using this bot through your Profile or Server, you agree to these terms and to Discord's own Terms of Service.",
   },
   {
     heading: "Description",
-    body: "The bot provides slash commands to look up Minecraft usernames and UUIDs by querying a third-party API.",
+    body: "The bot provides slash commands to look up Minecraft usernames, UUIDs and skins by querying a third-party API.",
   },
   {
     heading: "Acceptable Use",
