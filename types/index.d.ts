@@ -15,7 +15,15 @@ export interface Command {
   options?: CommandOption[];
   integration_types?: number[];
   contexts?: number[];
-  execute: (interaction: DiscordInteraction, env: Env) => unknown | Promise<unknown>;
+  execute: (
+    interaction: DiscordInteraction,
+    env: Env,
+  ) => DiscordInteractionResponse | Promise<DiscordInteractionResponse>;
+}
+
+export interface DiscordInteractionResponse {
+  type: number;
+  data?: Record<string, unknown>;
 }
 
 export interface StatusResult {
@@ -45,6 +53,7 @@ export interface DiscordInteractionUser {
 
 export interface DiscordInteraction {
   id?: string;
+  token: string;
   type: number;
   data?: {
     id?: string;

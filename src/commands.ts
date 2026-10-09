@@ -2,6 +2,8 @@ import { InteractionResponseType } from "discord-interactions";
 import {
   getProfile,
   getSession,
+  validatePlayer,
+  validateUsername,
   validateUUID,
   fetchStatuses,
   orderGroups,
@@ -11,6 +13,14 @@ import {
 import { EMBEDS } from "./embeds";
 import { COMPONENTS } from "./components";
 import type { Command } from "../types";
+
+const getOptionValue = (interaction: Parameters<Command["execute"]>[0], name: string): string =>
+  interaction.data?.options?.find((option) => option.name === name)?.value.trim() ?? "";
+
+const invalidInputResponse = () => ({
+  type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+  data: { embeds: [EMBEDS.INVALID_INPUT] },
+});
 
 export const uuidCommand: Command = {
   name: "uuid",
@@ -24,8 +34,8 @@ export const uuidCommand: Command = {
     },
   ],
   execute: async (interaction) => {
-    const usernameOption = interaction.data?.options?.find((opt) => opt.name === "username");
-    const username = usernameOption?.value?.trim()!;
+    const username = getOptionValue(interaction, "username");
+    if (!validateUsername(username)) return invalidInputResponse();
     console.log(`[uuid] Looking up UUID for Username '${username}'`);
     try {
       const profile = await getProfile(username);
@@ -51,7 +61,7 @@ export const uuidCommand: Command = {
       return {
         type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
         data: {
-          embeds: [EMBEDS.STATUSHINT],
+          embeds: [EMBEDS.API_ERROR],
         },
       };
     }
@@ -70,8 +80,8 @@ export const usernameCommand: Command = {
     },
   ],
   execute: async (interaction) => {
-    const uuidOption = interaction.data?.options?.find((opt) => opt.name === "uuid");
-    const uuid = uuidOption?.value?.trim()!;
+    const uuid = getOptionValue(interaction, "uuid");
+    if (!validateUUID(uuid)) return invalidInputResponse();
     console.log(`[username] Looking up Username for UUID '${uuid}'`);
     const cleanUuid = uuid.replaceAll("-", "");
     try {
@@ -98,7 +108,7 @@ export const usernameCommand: Command = {
       return {
         type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
         data: {
-          embeds: [EMBEDS.STATUSHINT],
+          embeds: [EMBEDS.API_ERROR],
         },
       };
     }
@@ -117,8 +127,9 @@ export const profileCommand: Command = {
     },
   ],
   execute: async (interaction) => {
-    const playerOption = interaction.data?.options?.find((opt) => opt.name === "player");
-    const player = playerOption?.value!?.trim().replaceAll("-", "");
+    const rawPlayer = getOptionValue(interaction, "player");
+    if (!validatePlayer(rawPlayer)) return invalidInputResponse();
+    const player = rawPlayer.replaceAll("-", "");
     console.log(`[profile] Looking up profile for '${player}'`);
     try {
       const profile = await getProfile(player);
@@ -144,7 +155,7 @@ export const profileCommand: Command = {
       return {
         type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
         data: {
-          embeds: [EMBEDS.STATUSHINT],
+          embeds: [EMBEDS.API_ERROR],
         },
       };
     }
@@ -163,8 +174,8 @@ export const sessionCommand: Command = {
     },
   ],
   execute: async (interaction) => {
-    const playerOption = interaction.data?.options?.find((opt) => opt.name === "player");
-    const player = playerOption?.value!?.trim();
+    const player = getOptionValue(interaction, "player");
+    if (!validatePlayer(player)) return invalidInputResponse();
     console.log(`[session] Looking up session for '${player}'`);
     try {
       let uuid = player.replaceAll("-", "");
@@ -204,7 +215,7 @@ export const sessionCommand: Command = {
       return {
         type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
         data: {
-          embeds: [EMBEDS.STATUSHINT],
+          embeds: [EMBEDS.API_ERROR],
         },
       };
     }

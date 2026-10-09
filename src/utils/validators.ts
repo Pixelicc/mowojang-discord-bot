@@ -17,7 +17,7 @@ const USERNAME_REGEX = /^[a-zA-Z0-9_]{1,16}$/;
  */
 export const validateUUID = (UUID: string): boolean => {
   if (typeof UUID !== "string") return false;
-  UUID = undashUUID(UUID);
+  UUID = undashUUID(UUID).toLowerCase();
   if (UUID.length !== 32) return false;
   return UUID_REGEX.test(UUID);
 };

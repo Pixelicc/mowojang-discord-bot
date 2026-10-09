@@ -4,6 +4,23 @@ import type { StatusEntry } from "../../types";
 
 const STATUS_GROUPS = ["Mowojang API", "Seraph API", "Minecraft API", "Other APIs"];
 
+const isRecord = (value: unknown): value is Record<string, unknown> => typeof value === "object" && value !== null;
+
+const isStatusEntry = (value: unknown): value is StatusEntry =>
+  isRecord(value) &&
+  typeof value.name === "string" &&
+  typeof value.group === "string" &&
+  Array.isArray(value.results) &&
+  value.results.every(
+    (result) =>
+      isRecord(result) &&
+      typeof result.status === "number" &&
+      typeof result.hostname === "string" &&
+      typeof result.duration === "number" &&
+      typeof result.success === "boolean" &&
+      typeof result.timestamp === "string",
+  );
+
 export async function fetchStatuses(): Promise<StatusEntry[]> {
   const response = await fetch("https://mowojang-status.pixelic.dev/api/v1/endpoints/statuses?page=1&pageSize=1", {
     cf: {
@@ -11,7 +28,14 @@ export async function fetchStatuses(): Promise<StatusEntry[]> {
       cacheEverything: true,
     },
   });
-  return (await response.json()) as StatusEntry[];
+  if (!response.ok) {
+    throw new Error(`Status service request failed (${response.status})`);
+  }
+  const data: unknown = await response.json();
+  if (!Array.isArray(data) || !data.every(isStatusEntry)) {
+    throw new Error("Status service returned an invalid response");
+  }
+  return data;
 }
 
 export function orderGroups(statuses: StatusEntry[]): string[] {

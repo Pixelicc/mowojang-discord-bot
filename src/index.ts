@@ -1,13 +1,36 @@
 import { Hono } from "hono";
 import { InteractionResponseType, InteractionType, verifyKey } from "discord-interactions";
 import { commands } from "./commands";
-import type { DiscordInteraction } from "../types";
+import type { Command, DiscordInteraction } from "../types";
 import { renderPrivacyPage, renderTermsPage } from "./legal";
 import { renderLandingPage } from "./landing";
 import { fetchStatuses, buildStatusPage, incrementCommandStatistic } from "./utils";
 import { EMBEDS } from "./embeds";
 
 const app = new Hono<{ Bindings: Env }>();
+
+const updateCommandResponse = async (command: Command, interaction: DiscordInteraction, env: Env): Promise<void> => {
+  const data = await Promise.resolve(command.execute(interaction, env))
+    .then((result) => result.data ?? { content: "An error occurred. Please try again." })
+    .catch(() => {
+      console.error(`/${command.name} failed`);
+      return { content: "An error occurred. Please try again." };
+    });
+
+  try {
+    const response = await fetch(
+      `https://discord.com/api/v10/webhooks/${env.DISCORD_APPLICATION_ID}/${interaction.token}/messages/@original`,
+      {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      },
+    );
+    if (!response.ok) console.error(`/${command.name} response could not be updated`);
+  } catch {
+    console.error(`/${command.name} response could not be updated`);
+  }
+};
 
 app.get("/", (c) => c.html(renderLandingPage(c.env.DISCORD_APPLICATION_ID)));
 app.get("/legal/privacy", (c) => c.html(renderPrivacyPage()));
@@ -37,8 +60,8 @@ app.post("/interactions", async (c) => {
 
     if (command) {
       c.executionCtx.waitUntil(incrementCommandStatistic(c.env, commandName));
-      const result = await command.execute(interaction, c.env);
-      return c.json(result);
+      c.executionCtx.waitUntil(updateCommandResponse(command, interaction, c.env));
+      return c.json({ type: InteractionResponseType.DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE });
     }
 
     console.warn(`Received unknown command /${commandName}`);
@@ -57,8 +80,8 @@ app.post("/interactions", async (c) => {
           type: InteractionResponseType.UPDATE_MESSAGE,
           data: buildStatusPage(statuses, group),
         });
-      } catch (err) {
-        console.error(`[status] Failed to fetch statuses: ${err instanceof Error ? err.message : String(err)}`);
+      } catch {
+        console.error("Status request failed");
         return c.json({
           type: InteractionResponseType.UPDATE_MESSAGE,
           data: { embeds: [EMBEDS.STATUSHINT], components: [] },

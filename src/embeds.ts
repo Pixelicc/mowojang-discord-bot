@@ -6,13 +6,25 @@ const ProfileEmbed = (data: { UUID: string; username: string }) => ({
   description: `**Username:** \`${data.username}\` (${data.username.length})\n**UUID:**\n \`${undashUUID(data.UUID)}\`\n\`${dashUUID(data.UUID)}\`\n\`[I;${UUIDToIntArray(data.UUID).join(",")}]\``,
   color: 0xa67996,
   thumbnail: {
-    url: `https://mc-heads.net/body/${undashUUID(data.UUID)}/left`,
+    url: `https://nmsr.nickac.dev/fullbody/${undashUUID(data.UUID)}`,
   },
 });
 
 const NotFoundEmbed = {
   title: "Error",
   description: "Could not find a Minecraft Profile for the given Username/UUID.",
+  color: 0xa67980,
+};
+
+const InvalidInputEmbed = {
+  title: "Invalid input",
+  description: "Enter a valid Minecraft username or UUID for this command.",
+  color: 0xa67980,
+};
+
+const ApiErrorEmbed = {
+  title: "Service unavailable",
+  description: "A Minecraft profile service did not respond as expected. Please try again shortly.",
   color: 0xa67980,
 };
 
@@ -24,10 +36,10 @@ const SessionEmbed = (data: {
   slim: boolean;
 }) => ({
   title: "Minecraft Session Profile",
-  description: `**Username:** \`${data.username}\` (${data.username.length})\n**UUID:**\n \`${undashUUID(data.UUID)}\`\n\`${dashUUID(data.UUID)}\`\n\`[I;${UUIDToIntArray(data.UUID).join(",")}]\`\n**Skin Model:** ${data.slim ? "Slim" : "Classic"}\n**Skin URL:** ${data.skinURL ?? "N/A"}\n**Cape URL:** ${data.capeURL ?? "N/A"}`,
+  description: `**Username:** \`${data.username}\` (${data.username.length})\n**UUID:**\n \`${undashUUID(data.UUID)}\`\n\`${dashUUID(data.UUID)}\`\n\`[I;${UUIDToIntArray(data.UUID).join(",")}]\`\n\n**Skin Model:** ${data.slim ? "Slim" : "Classic"}\n**Skin:** ${data.skinURL ? `[Visit URL](${data.skinURL})` : "N/A"}\n**Cape:** ${data.capeURL ? `[Visit URL](${data.capeURL})` : "N/A"}`,
   color: 0xa67996,
   thumbnail: {
-    url: `https://mc-heads.net/body/${undashUUID(data.UUID)}/left`,
+    url: `https://nmsr.nickac.dev/fullbody/${undashUUID(data.UUID)}`,
   },
 });
 
@@ -40,21 +52,28 @@ const StatusEmbed = {
 
 const StatusSummaryEmbed = (statuses: StatusEntry[], group: string) => {
   const groupedStatuses = statuses.filter((status) => status.group === group);
+  const visibleStatuses = groupedStatuses.slice(0, 100);
+  const allHealthy =
+    groupedStatuses.length > 0 && groupedStatuses.every((status) => status.results[0]?.success === true);
+  const hasFailure = groupedStatuses.some((status) => status.results[0]?.success === false);
 
   return {
     title: `Status — ${group}`,
-    description: "Latest status checks for Mowojang and related Minecraft APIs.",
-    color: groupedStatuses.every((status) => status.results[0]?.success) ? 0x80a679 : 0xa67980,
+    description: groupedStatuses.length
+      ? "Latest status checks for Mowojang and related Minecraft APIs."
+      : "No status endpoints are available for this group.",
+    color: allHealthy ? 0x80a679 : hasFailure ? 0xa67980 : 0x7980a6,
     url: "https://mowojang-status.pixelic.dev/",
-    fields: Array.from({ length: Math.ceil(groupedStatuses.length / 5) }, (_, index) => {
-      const chunk = groupedStatuses.slice(index * 5, index * 5 + 5);
+    fields: Array.from({ length: Math.ceil(visibleStatuses.length / 4) }, (_, index) => {
+      const chunk = visibleStatuses.slice(index * 4, index * 4 + 4);
       return {
-        name: "Endpoints",
+        name: "\u200b",
         value: chunk
           .map((status) => {
             const result = status.results[0];
             const latency = result ? `${(result.duration / 1000000).toFixed(0)} ms` : "N/A";
-            return `${result?.success ? "✅" : "❌"} **${status.name}**\n${result?.status ?? "N/A"} | ${result?.hostname ?? "N/A"} | ${latency}`;
+            const indicator = result?.success ? "✅" : result ? "❌" : "⚪";
+            return `${indicator} **${status.name.slice(0, 100)}**\n${result?.status ?? "N/A"} | ${result?.hostname.slice(0, 80) ?? "N/A"} | ${latency}`;
           })
           .join("\n\n"),
         inline: false,
@@ -69,4 +88,6 @@ export const EMBEDS = {
   STATUS: StatusSummaryEmbed,
   STATUSHINT: StatusEmbed,
   NOT_FOUND: NotFoundEmbed,
+  INVALID_INPUT: InvalidInputEmbed,
+  API_ERROR: ApiErrorEmbed,
 };
