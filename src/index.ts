@@ -9,13 +9,22 @@ import { EMBEDS } from "./embeds";
 
 const app = new Hono<{ Bindings: Env }>();
 
+const addTimingFooter = <T extends object>(data: T, start: number): T => {
+  const { embeds } = data as { embeds?: object[] };
+  if (!Array.isArray(embeds)) return data;
+  const text = `Processed in ${Date.now() - start}ms.`;
+  return { ...data, embeds: embeds.map((embed) => ({ ...embed, footer: { text } })) };
+};
+
 const updateCommandResponse = async (command: Command, interaction: DiscordInteraction, env: Env): Promise<void> => {
-  const data = await Promise.resolve(command.execute(interaction, env))
+  const start = Date.now();
+  const rawData = await Promise.resolve(command.execute(interaction, env))
     .then((result) => result.data ?? { content: "An error occurred. Please try again." })
     .catch(() => {
       console.error(`/${command.name} failed`);
       return { content: "An error occurred. Please try again." };
     });
+  const data = addTimingFooter(rawData, start);
 
   try {
     const response = await fetch(
@@ -74,17 +83,18 @@ app.post("/interactions", async (c) => {
   if (interaction.type === InteractionType.MESSAGE_COMPONENT) {
     if (interaction.data?.custom_id?.startsWith("status:")) {
       const group = interaction.data.custom_id.slice("status:".length);
+      const start = Date.now();
       try {
         const statuses = await fetchStatuses();
         return c.json({
           type: InteractionResponseType.UPDATE_MESSAGE,
-          data: buildStatusPage(statuses, group),
+          data: addTimingFooter(buildStatusPage(statuses, group), start),
         });
       } catch {
         console.error("Status request failed");
         return c.json({
           type: InteractionResponseType.UPDATE_MESSAGE,
-          data: { embeds: [EMBEDS.STATUSHINT], components: [] },
+          data: addTimingFooter({ embeds: [EMBEDS.STATUSHINT], components: [] }, start),
         });
       }
     }
