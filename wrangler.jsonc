@@ -6,29 +6,25 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "mowojang-discord-bot",
   "main": "src/index.ts",
-  "compatibility_date": "2026-09-11",
+  "compatibility_date": "2026-10-10",
   "observability": {
     "enabled": true,
-    "traces": {
-      "enabled": true,
-      "head_sampling_rate": 1,
-    },
+    "head_sampling_rate": 1
   },
   "upload_source_maps": true,
   "vars": {
     "DISCORD_APPLICATION_ID": "1508890289849368606",
-    "DISCORD_PUBLIC_KEY": "dd3f164eebd0ee71cad1eafd03d054fcbdc9aed6b36da371ba178fc8de164205",
+    "DISCORD_PUBLIC_KEY": "dd3f164eebd0ee71cad1eafd03d054fcbdc9aed6b36da371ba178fc8de164205"
   },
   "workers_dev": false,
   "preview_urls": false,
   "placement": {
-    "mode": "smart",
+    "mode": "smart"
   },
   "kv_namespaces": [
     {
       "binding": "MOWOJANG_DISCORD_BOT",
-      "id": "1f69c9d1bd784b289ac33e3e06908c8a",
-      "remote": false,
-    },
-  ],
+      "id": "1f69c9d1bd784b289ac33e3e06908c8a"
+    }
+  ]
 }
