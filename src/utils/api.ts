@@ -1,3 +1,4 @@
+import packageJSON from "../../package.json";
 import { undashUUID, validatePlayer, validateUUID } from "./index";
 
 const fetchApi = (path: string) =>
@@ -5,6 +6,10 @@ const fetchApi = (path: string) =>
     cf: {
       cacheTtl: 300,
       cacheEverything: true,
+    },
+    headers: {
+      "Content-Type": "application/json",
+      "User-Agent": `workerd mowojang-discord-bot/${packageJSON.version} (https://github.com/pixelicc/mowojang-discord-bot)`,
     },
   });
 
